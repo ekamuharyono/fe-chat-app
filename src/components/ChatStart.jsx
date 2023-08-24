@@ -1,9 +1,9 @@
 import React from 'react'
-import viteIcon from '/vite.svg'
+import reactIcon from '../assets/react.svg'
 
-const ChatEnd = ({ statusChat, contentChat, profilePicture, timeChat, isLastChat = true }) => {
+const ChatStart = ({ statusChat, contentChat, profilePicture, timeChat, isLastChat = true }) => {
   return (
-    <div className="chat chat-end">
+    <div className="chat chat-start">
       <div className="chat-image avatar">
         <div className="w-10 rounded-full">
           <img src={profilePicture} />
@@ -20,4 +20,4 @@ const ChatEnd = ({ statusChat, contentChat, profilePicture, timeChat, isLastChat
   )
 }
 
-export default ChatEnd
+export default ChatStart

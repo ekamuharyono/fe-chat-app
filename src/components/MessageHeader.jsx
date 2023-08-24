@@ -1,18 +1,27 @@
 import React from 'react'
 import avatar from '/vite.svg'
 
-const MessageHeader = ({ profilePicture, contactName }) => {
+const MessageHeader = ({ profilePicture, contactName, backToHome }) => {
+  const handleBackToHome = () => {
+    backToHome(true)
+  }
+
   return (
-    <div className="navbar bg-base-200 h-20 px-3 absolute z-50">
-      <div id="avatar" className="col-span-1">
+    <div className="navbar bg-base-200 h-20 absolute z-50 md:px-3">
+      <div onClick={handleBackToHome} id="avatar" className="col-span-1 btn px-1 pr-3 h-14 rounded-full">
+        <div className='mr-1 md:hidden'>
+          <svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path fill='white' d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12H20V10H10.83l4.58-4.59z" />
+          </svg>
+        </div>
         <div className="avatar flex items-center">
           <div className="w-10 rounded-full ring">
             <img src={profilePicture} />
           </div>
         </div>
       </div>
-      <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl">{contactName}</a>
+      <div className="flex-1 cursor-pointer">
+        <a className="normal-case mx-2 font-semibold text-xl">{contactName}</a>
       </div>
       <div className="dropdown dropdown-end">
         <button className="btn btn-square btn-ghost">

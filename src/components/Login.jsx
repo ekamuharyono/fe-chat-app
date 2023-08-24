@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import Alert from './Alert'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -9,32 +10,62 @@ const Login = () => {
 
   const [username, setUsername] = useState()
   const [password, setPassword] = useState()
+  const [showAlert, setShowAlert] = useState(false)
+  const [disableButton, setDisableButton] = useState(false)
+  const [loginInfo, setLoginInfo] = useState({
+    status: '',
+    message: ''
+  })
 
   const handleLogin = async (e) => {
     e.preventDefault()
-    const response = await axios({
-      url: `${API_BASE_URL}/auth/login`,
-      method: 'POST',
-      data: {
-        username,
-        password
-      },
-      responseType: 'json'
-    })
+    setDisableButton(true)
+    try {
+      const response = await axios({
+        url: `${API_BASE_URL}/auth/login`,
+        method: 'POST',
+        data: {
+          username,
+          password
+        },
+        responseType: 'json'
+      })
 
-    if (response.status == '200') {
-      // console.log(response.data.token)
-      localStorage.setItem('token', response.data.token)
-      localStorage.setItem('userName', response.data.username)
-      console.log('login berhasil')
-      navigate('/')
-      window.location.reload()
-      // return <Navigate replace to={'/'} />
-      // setTimeout(() => {
-      //   <Navigate to={'/'} />
-      // }, 1);
+      if (response.status == '200') {
+        setDisableButton(false)
+        setLoginInfo({
+          status: 'success',
+          message: "Login Success"
+        })
+        localStorage.setItem('token', response.data.token)
+        localStorage.setItem('userName', response.data.username)
+        setShowAlert(true)
+
+        setTimeout(() => {
+          navigate('/')
+          setShowAlert(false)
+          window.location.reload()
+        }, 2000);
+      }
+    } catch (error) {
+      setDisableButton(false)
+      setLoginInfo({
+        status: 'error',
+        message: error.response.data.message
+      })
+      setShowAlert(true)
+      setTimeout(() => {
+        setShowAlert(false)
+      }, 3000);
     }
+
+
+
+    // if (response.status == '401') {
+    //   console.log('login gagal')
+    // }
   }
+
 
   return (
     <div className="hero min-h-screen bg-base-200">
@@ -57,10 +88,22 @@ const Login = () => {
               </label>
             </div>
             <div className="form-control mt-6">
-              <button type='submit' className="btn btn-primary">Login</button>
+              {disableButton ? (
+                <div className='text-center'>
+                  <span className="loading loading-ring loading-xs"></span>
+                  <span className="loading loading-ring loading-sm"></span>
+                  <span className="loading loading-ring loading-md"></span>
+                  <span className="loading loading-ring loading-lg"></span>
+                </div>
+              ) : (
+                <button type='submit' className="btn btn-primary">Login</button>
+              )}
             </div>
           </form>
         </div>
+      </div>
+      <div className={showAlert ? '' : 'hidden'}>
+        {loginInfo.status == 'success' ? <Alert status={loginInfo.status} alertMessage={loginInfo.message} /> : <Alert status={loginInfo.status} alertMessage={loginInfo.message} />}
       </div>
     </div>
   )

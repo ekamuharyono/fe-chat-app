@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const MessageInput = ({ socket }) => {
+const MessageInput = ({ socket, targetUser, onMessageSent }) => {
   const [message, setMessage] = useState('')
 
   const handleSendMessage = (e) => {
@@ -9,10 +9,17 @@ const MessageInput = ({ socket }) => {
       socket.emit('message', {
         text: message,
         from: localStorage.getItem('userName'),
-        to: localStorage.getItem('userName') == 'yonoo' ? 'daya' : 'yonoo',
+        to: targetUser,
         id: `${socket.id}${Math.random()}`,
         socketID: socket.id,
       });
+      onMessageSent({
+        text: message,
+        sender: localStorage.getItem('userName'),
+        receiver: targetUser,
+        id: `${socket.id}${Math.random()}`,
+        socketID: socket.id,
+      })
     }
     setMessage('');
   };
@@ -22,8 +29,8 @@ const MessageInput = ({ socket }) => {
       <div className='w-full basis-11/12'>
         <input onChange={(e) => setMessage(e.target.value)} type="text" placeholder={message || 'Type here'} value={message} className="input input-bordered input-info-content px-6 rounded-full w-full mr-3 outline-none text-white" />
       </div>
-      <div className='transform rotate-90 btn rounded-full w-14 h-14 border shadow-lg mr-3'>
-        <button type='submit' className='drop-shadow-xl'>
+      <div className='transform rotate-90 btn rounded-full w-14 h-14 border shadow-lg ml-3 md:mx-3'>
+        <button type='submit' className='mask mask-circle drop-shadow-xl'>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
